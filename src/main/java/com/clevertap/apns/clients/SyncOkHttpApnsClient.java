@@ -44,6 +44,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.security.spec.InvalidKeySpecException;
 import java.util.UUID;
+import java.util.Arrays;
 
 /**
  * A wrapper around OkHttp's http client to send out notifications using Apple's HTTP/2 API.
@@ -182,7 +183,22 @@ public class SyncOkHttpApnsClient implements ApnsClient {
 
         final SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
 
-        builder.sslSocketFactory(sslSocketFactory);
+        builder.sslSocketFactory(sslSocketFactory, new X509TrustManager() {
+            @Override
+            public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+
+            }
+
+            @Override
+            public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+
+            }
+
+            @Override
+            public X509Certificate[] getAcceptedIssuers() {
+                return new X509Certificate[0];
+            }
+        });
 
         client = builder.build();
 
